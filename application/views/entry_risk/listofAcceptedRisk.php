@@ -1,0 +1,218 @@
+<div class="breadcrumb pull-right">
+    <li>Home</li>    
+    <li class="active">Accepted Risk Entry</li>
+</div>
+<!-- begin row -->
+<?php if (!empty($message)): ?> 
+<div id="message" class="btn btn-success btn-xs" title="Message" style="margin-left: 5px"><?php echo $message; ?></div> 
+<?php endif; ?>
+<!-- begin row -->
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-md-12">
+        <!-- begin panel -->
+        <div class="panel panel-inverse">
+            <div class="panel-heading">
+                <!--<div class="panel-heading-btn">
+                    <input class="form-control input-white pull-left" id="searchTerm" class="search_box" onkeyup="Search()" placeholder="Enter keywords here..." style="margin-left: 5px;height: 25px; width: 200px;margin-top: 1px;">
+                    <i class="fa fa-search" style="margin-left: 5px;margin-top: 8px;"></i> Search
+                </div>  -->
+                <h4 class="panel-title" style="margin-top: 5px;">Accepted Risk Entry - <div class="btn btn-success btn-xs">Total of <?php echo number_format($approval['approval'], 0, "", ","); ?> entries</div></h4>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <form method="post" onsubmit="return validate(this)"> 
+                        <table id="data-table" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="3%"><input type="checkbox" name="selectall" id="selectall"></th>                 
+                                    <th width="5%">No.</th>                 
+                                    <th width="18%">Entered Date</th>                                       
+                                    <th width="5%">Code</th>                                       
+                                    <th width="25%">Action Plan</th>                                                                
+                                    <th width="25%">Project Name</th>                                                                
+                                    <th width="20%">Employee</th>
+                                    <th width="10%">Audit</th>
+                                    <th width="1%" style="display: none;"></th>
+                                    <th width="1%" style="display: none;"></th>
+                                    <th width="20%" colspan="3" style="text-align: right;">
+                                        <?php if ($canMULTI_DELETE) :?>
+                                        <button id="_remove" name="submit" value="multi_delete" type="submit" class="btn btn-sm btn-icon btn-circle btn-danger _remove" title="multiple cancel"/><i class="fa fa-times"></i></button>
+                                        <?php endif ;?>
+                                    </th>                                                                                                                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $no = 1;  ?>
+                                <?php foreach ($data as $row) : ?>
+                                <tr>
+                                    <td><input type="checkbox" class="check_list" name="ids[]" id="check_list" value="<?php echo $row['id']; ?>"></td>
+                                    <td style="text-align: left;"><?php echo $no ?>.</td>
+                                    <td style="text-align: left;"><?php echo $row['entered_date'] ?></td>
+                                    <?php if ($row['is_duplicate'] != 1) :?>
+                                    <td style="text-align: left;"><?php echo $row['code'] ?></td>
+                                    <?php else: ?> 
+                                    <td style="text-align: left;"><div class="btn btn-success btn-xs"><?php echo $row['code'] ?></div></td>
+                                    <?php endif;?>       
+                                    <td style="text-align: left;"><?php echo $row['action_plan'] ?></td>
+                                    <td style="text-align: left;"><?php echo $row['project_name'] ?></td>
+                                    <td style="text-align: left;"><?php echo $row['fullname'] ?></td>
+                                    <td style="text-align: left;"><?php echo $row['audit_name'] ?></td>
+                                    <td style="text-align: left;display: none;"></td>
+                                    <td style="font-size: 15px;text-align: right;">
+                                    <?php if ($canEDIT) :?>
+                                    <a href="<?php echo site_url('entry_risk/editAcceptedRisks').'/'.$row['id']?>" title="edit" class="btn btn-xs btn-icon btn-circle btn-primary edit"><i class="fa fa-pencil"></i></a> 
+                                    <?php endif;?>
+                                    <?php if ($canVIEW):?>
+                                    <a href="<?php echo site_url('entry_risk/viewActionPlan').'/'.$row['id']?>" title="view" class="btn btn-xs btn-icon btn-circle btn-primary view"><i class="fa fa-folder-open"></i></a>
+                                    <?php endif;?>
+                                    <?php if($canDUPLICATE):?>
+                                    <a href="<?php echo site_url('entry_risk/duplicateOfActionPlan').'/'.$row['id']?>" title="duplicate" class="btn btn-xs btn-icon btn-circle btn-primary duplicate"><i class="fa fa-copy"></i></a>           
+                                    <?php endif;?>
+                                    </td>     
+                                </tr>
+                                <?php $no += 1; ?>
+                                <?php endforeach; ?> 
+                            </tbody>
+                        </table>
+                    </form>    
+                </div>
+            </div>
+        </div>
+        <!-- end panel -->
+    </div>
+    <!-- end col-12 -->
+</div>
+<!-- end row -->   
+
+<script>
+
+$(document).ready(function() { 
+    
+    <?php if (!empty($message)): ?>
+    <?php endif; ?>
+});
+
+$(".edit").click(function () {
+    
+    var ans = window.confirm("Are you sure you want to edit?")
+
+    if (ans)
+    {
+        //window.alert("Click ok to proceed.");
+        return true;   
+    }
+    else
+    {
+        //window.alert("Are you sure you want to cancel?");
+        return false;    
+    }
+    
+});
+
+$(".view").click(function(){
+    
+    var ans = window.confirm("Are you sure you want to view?")
+
+    if (ans)
+    {
+    //window.alert("Successfully cancel.");
+    return true;   
+    }
+    else
+    {
+    //window.alert("Are you sure you want to cancel?");
+    return false;    
+    }
+    
+});
+
+
+$("._remove").click(function () {
+    
+    var ans = window.confirm("Are you sure you want multiple cancel?")
+
+    if (ans)
+    {
+    return true;   
+    }
+    else
+    {
+    //window.alert("Are you sure you want to cancel?");
+    return false;    
+    }
+});
+
+function validate(f){
+f = f.elements;
+for (var c = 0, i = f.length - 1; i > -1; --i)
+    if (f[i].name && f[i].checked) ++c;
+        if (c < 2) 
+        alert('Please select at least two.');
+return c > 1;
+};
+
+$('#selectall').click(function(event) {  //on click 
+    if(this.checked) { // check select status
+        $('.check_list').each(function() { //loop through each checkbox
+            this.checked = true;  //select all checkboxes with class "checkbox1"               
+        });
+    }else{
+        $('.check_list').each(function() { //loop through each checkbox
+            this.checked = false; //deselect all checkboxes with class "checkbox1"                       
+        });         
+    }
+});
+
+$(".duplicate").click(function(){
+    
+    var ans = window.confirm("Are you sure you want to duplicate this Action Plan?")
+
+    if (ans)
+    {
+    //window.alert("Successfully cancel.");
+    return true;   
+    }
+    else
+    {
+    //window.alert("Are you sure you want to cancel?");
+    return false;    
+    }
+    
+});
+
+function Search() {
+    var searchText = document.getElementById('searchTerm').value;
+    var targetTable = document.getElementById('dataTable');
+    var targetTableColCount;
+            
+    //Loop through table rows
+    for (var rowIndex = 0; rowIndex < targetTable.rows.length; rowIndex++) {
+        var rowData = '';
+
+        //Get column count from header row
+        if (rowIndex == 0) {
+           targetTableColCount = targetTable.rows.item(rowIndex).cells.length;
+           continue; //do not execute further code for header row.
+        }
+                
+        //Process data rows. (rowIndex >= 1)
+        for (var colIndex = 0; colIndex < targetTableColCount; colIndex++) {
+            rowData += targetTable.rows.item(rowIndex).cells.item(colIndex).textContent;
+        }
+
+        //If search term is not found in row data
+        //then hide the row, else show
+        if (rowData.toLowerCase().indexOf(searchText) == -1)
+            targetTable.rows.item(rowIndex).style.display = 'none';
+        else
+            targetTable.rows.item(rowIndex).style.display = 'table-row';
+        }
+    
+    }
+    
+</script>  
+              
+         
+
+       
